@@ -6,7 +6,7 @@ const Sidebar = () => {
   const { categorias } = useQuiosco();
   return (
     <>
-      <Image width={300} height={100} src="/assets/img/logo.svg" alt="Imagen Logotipo" />
+      <Image width={150} height={150} className="m-auto" src="/assets/img/logo.svg" alt="Imagen Logotipo" />
 
       <nav className="mt-10">
         {categorias.map((categoria) => (
