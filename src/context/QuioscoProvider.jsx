@@ -1,16 +1,19 @@
 import { useState, useEffect, createContext } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const QuioscoContext = createContext();
 
 const QuioscoProvider = ({ children }) => {
   const [categorias, setCategorias] = useState([]);
   const [categoriaActual, setCategoriaActual] = useState({});
+  const [producto, setProducto] = useState({});
+  const [modal, setModal] = useState(false);
+  const [pedido, setPedido] = useState([]);
 
   const obtenerCategorias = async () => {
     const { data } = await axios('/api/categorias');
     setCategorias(data);
-    console.log('🚀 ~ file: QuioscoProvider.jsx:11 ~ obtenerCategorias ~ data:', data);
   };
   useEffect(() => {
     obtenerCategorias();
@@ -25,7 +28,44 @@ const QuioscoProvider = ({ children }) => {
     setCategoriaActual(categoria[0]);
   };
 
-  return <QuioscoContext.Provider value={{ categorias, categoriaActual, handleClickCategoria }}>{children}</QuioscoContext.Provider>;
+  const handleChangeModal = () => {
+    setModal(!modal);
+  };
+
+  const handleSetProducto = (producto) => {
+    setProducto(producto);
+  };
+
+  const handleAgregarPedido = ({ categoriaId, imagen, ...producto }) => {
+    if (pedido.some((productoState) => productoState.id === producto.id)) {
+      // Actualizar la catidad
+      const pedidoActualizado = pedido.map((productoState) => (productoState.id === producto.id ? producto : productoState));
+      setPedido(pedidoActualizado);
+      toast.success('Guardado Correctamente');
+    } else {
+      setPedido([...pedido, producto]);
+      toast.success('Agregado al Pedido');
+    }
+    setModal(false);
+  };
+
+  return (
+    <QuioscoContext.Provider
+      value={{
+        categorias,
+        categoriaActual,
+        producto,
+        handleClickCategoria,
+        handleSetProducto,
+        modal,
+        handleChangeModal,
+        handleAgregarPedido,
+        pedido,
+      }}
+    >
+      {children}
+    </QuioscoContext.Provider>
+  );
 };
 
 export { QuioscoProvider };
