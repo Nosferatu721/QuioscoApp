@@ -79,7 +79,7 @@ const QuioscoProvider = ({ children }) => {
       await axios.post('/api/ordenes', { pedido, nombre, total, fecha: Date.now().toString() });
 
       // ~ Resetear app
-      categoriaActual(categorias[0]);
+      setCategoriaActual(categorias[0]);
       setPedido([]);
       setNombre('');
       setTotal(0);
